@@ -91,7 +91,7 @@ public abstract class StandardExpander implements Expander
         public StandardExpansion<T> filterRelationships(
                 Predicate<? super Relationship> filter )
         {
-            return createNew( expander.addRelationsipFilter( filter ) );
+            return createNew( expander.addRelationshipFilter( filter ) );
         }
 
         public T getSingle()
@@ -122,7 +122,7 @@ public abstract class StandardExpander implements Expander
 
         public StandardExpansion<Relationship> relationships()
         {
-            return new RelationsipExpansion( expander, start );
+            return new RelationshipExpansion( expander, start );
         }
 
         public StandardExpansion<Pair<Relationship, Node>> pairs()
@@ -131,10 +131,10 @@ public abstract class StandardExpander implements Expander
         }
     }
 
-    private static final class RelationsipExpansion extends
+    private static final class RelationshipExpansion extends
             StandardExpansion<Relationship>
     {
-        RelationsipExpansion( StandardExpander expander, Node start )
+        RelationshipExpansion( StandardExpander expander, Node start )
         {
             super( expander, start );
         }
@@ -149,7 +149,7 @@ public abstract class StandardExpander implements Expander
         StandardExpansion<Relationship> createNew(
                 @SuppressWarnings( "hiding" ) StandardExpander expander )
         {
-            return new RelationsipExpansion( expander, start );
+            return new RelationshipExpansion( expander, start );
         }
 
         @Override
@@ -664,8 +664,15 @@ public abstract class StandardExpander implements Expander
         public StandardExpander addRelationsipFilter(
                 Predicate<? super Relationship> filter )
         {
-            return new FilteringExpander( expander, append( filters,
-                    new RelationshipFilter( filter ) ) );
+            return addRelationshipFilter(filter);
+        }
+
+        @Override
+        public StandardExpander addRelationshipFilter(
+        		Predicate<? super Relationship> filter )
+        {
+        	return new FilteringExpander( expander, append( filters,
+        			new RelationshipFilter( filter ) ) );
         }
 
         @Override
@@ -878,7 +885,7 @@ public abstract class StandardExpander implements Expander
 
     public final Expansion<Relationship> expand( Node start )
     {
-        return new RelationsipExpansion( this, start );
+        return new RelationshipExpansion( this, start );
     }
 
     static <T> T[] append( T[] array, T item )
@@ -960,7 +967,13 @@ public abstract class StandardExpander implements Expander
     public StandardExpander addRelationsipFilter(
             Predicate<? super Relationship> filter )
     {
-        return new FilteringExpander( this, new RelationshipFilter( filter ) );
+        return addRelationshipFilter(filter);
+    }
+     
+    public StandardExpander addRelationshipFilter(
+        		Predicate<? super Relationship> filter )
+        {
+        	return new FilteringExpander( this, new RelationshipFilter( filter ) );
     }
 
     static StandardExpander wrap( RelationshipExpander expander )
